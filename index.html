@@ -3,17 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Will You Be Mine 💖</title>
+<title>Will You Be My Valentine 💖</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
-}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
 
 body{
 height:100vh;
@@ -21,93 +16,120 @@ overflow:hidden;
 display:flex;
 justify-content:center;
 align-items:center;
-background:linear-gradient(-45deg,#ff9a9e,#fad0c4,#fbc2eb,#a18cd1);
-background-size:400% 400%;
-animation:bg 12s infinite alternate;
+position:relative;
+color:white;
 }
 
-@keyframes bg{
-0%{background-position:0% 50%;}
-100%{background-position:100% 50%;}
+/* 🌅 Background */
+.bg{
+position:fixed;
+width:100%;
+height:100%;
+background:url("https://images.pexels.com/photos/1024960/pexels-photo-1024960.jpeg") center/cover no-repeat;
+animation:zoom 25s infinite alternate ease-in-out;
+z-index:-3;
+}
+@keyframes zoom{
+from{transform:scale(1);}
+to{transform:scale(1.15);}
 }
 
-/* PREMIUM CARD */
+.overlay{
+position:fixed;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.45);
+z-index:-2;
+}
+
+/* ✨ Glow bubbles */
+.bubble{
+position:fixed;
+width:140px;
+height:140px;
+border-radius:50%;
+background:radial-gradient(circle,rgba(255,255,255,0.4),transparent);
+animation:float 10s infinite alternate;
+z-index:-1;
+}
+@keyframes float{
+from{transform:translateY(0);}
+to{transform:translateY(-60px);}
+}
+
+/* 💎 Card */
 .card{
 position:relative;
 width:90%;
 max-width:650px;
-padding:60px 40px 140px;
-border-radius:30px;
-background:rgba(255,255,255,0.25);
+padding:70px 40px 200px;
+border-radius:35px;
+background:rgba(255,255,255,0.15);
 backdrop-filter:blur(30px);
-border:2px solid rgba(255,255,255,0.4);
-box-shadow:0 0 60px rgba(255,0,120,0.5);
+border:1px solid rgba(255,255,255,0.4);
+box-shadow:0 30px 80px rgba(0,0,0,0.4);
 text-align:center;
-overflow:hidden;
 }
 
 h1{
 font-family:'Great Vibes',cursive;
-font-size:44px;
+font-size:52px;
 margin-bottom:30px;
-color:white;
-text-shadow:0 0 12px rgba(255,255,255,0.8);
+text-shadow:0 0 20px rgba(255,255,255,0.9);
 }
 
-.quote{
-margin-top:20px;
-font-size:18px;
-min-height:60px;
-color:white;
-}
-
-/* BUTTONS */
 button{
-padding:14px 32px;
+padding:15px 36px;
 font-size:18px;
 border:none;
 border-radius:50px;
 cursor:pointer;
-transition:0.3s;
 font-weight:600;
 color:white;
+transition:0.3s;
 }
 
 #yesBtn{
 background:linear-gradient(45deg,#ff006e,#ff4d6d);
-box-shadow:0 0 20px #ff4d6d;
+box-shadow:0 0 25px #ff4d6d;
 }
-
-#yesBtn:hover{
-transform:scale(1.1);
-}
+#yesBtn:hover{transform:scale(1.1);}
 
 #noBtn{
 position:absolute;
-background:linear-gradient(45deg,#a18cd1,#fbc2eb);
-box-shadow:0 0 15px #fbc2eb;
+background:linear-gradient(45deg,#4cc9f0,#a18cd1);
+box-shadow:0 0 20px #4cc9f0;
 }
 
-/* Ring */
+/* 💍 Ring */
 .ring{
 display:none;
-font-size:90px;
-margin-top:20px;
-animation:pop 0.8s forwards;
+font-size:100px;
+margin-top:30px;
+animation:ringPop 1s forwards;
 }
-
-@keyframes pop{
+@keyframes ringPop{
 from{transform:scale(0);}
-to{transform:scale(1.2);}
+to{transform:scale(1.3);}
 }
 
-/* Falling */
+/* 💬 Quote */
+.quote{
+margin-top:20px;
+font-size:22px;
+font-weight:600;
+color:#ffffff;
+text-shadow:0 0 15px rgba(255,255,255,0.9);
+min-height:50px;
+}
+
+/* 🌹 Rain */
 .fall{
 position:fixed;
 top:-30px;
+font-size:24px;
 animation:fall linear forwards;
 }
-
 @keyframes fall{
 to{
 transform:translateY(110vh) rotate(360deg);
@@ -115,7 +137,7 @@ opacity:0;
 }
 }
 
-/* Fireworks */
+/* 🎇 Fireworks */
 canvas{
 position:fixed;
 top:0;
@@ -126,6 +148,11 @@ pointer-events:none;
 </head>
 
 <body>
+
+<div class="bg"></div>
+<div class="overlay"></div>
+<div class="bubble" style="top:10%;left:15%;"></div>
+<div class="bubble" style="bottom:10%;right:15%;"></div>
 
 <audio id="song">
 <source src="music/mylove.mp3" type="audio/mpeg">
@@ -145,77 +172,102 @@ pointer-events:none;
 
 <script>
 
-const card=document.getElementById("card");
-const yesBtn=document.getElementById("yesBtn");
-const noBtn=document.getElementById("noBtn");
-const ring=document.getElementById("ring");
-const quoteText=document.getElementById("quoteText");
-const song=document.getElementById("song");
+const card = document.getElementById("card");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const ring = document.getElementById("ring");
+const quoteText = document.getElementById("quoteText");
+const song = document.getElementById("song");
 
-const quotes=[
-"Please think again 🥺",
-"Destiny says YES 💕",
-"You can't escape love 😜",
-"My heart already chose you ❤️",
-"Just say YES 💘"
+const noQuotes = [
+  "Still thinking? 🥺",
+  "You can't escape 😜",
+  "My heart says YES ❤️",
+  "Destiny decided 💘"
 ];
 
-// Initial placement
-function placeNo(){
-noBtn.style.left="50%";
-noBtn.style.top="75%";
-noBtn.style.transform="translateX(-50%)";
+const yesQuote =
+  "You just made my world brighter and my heart happier forever 💖✨";
+
+/* -------- Initial NO placement -------- */
+function placeNo() {
+  const x = (card.clientWidth - noBtn.offsetWidth) / 2;
+  const y = card.clientHeight * 0.65;
+  noBtn.style.left = x + "px";
+  noBtn.style.top = y + "px";
 }
 placeNo();
 
-// Smart movement (no stuck + avoid YES button)
-noBtn.addEventListener("mouseenter",()=>{
+/* -------- NO movement (perfect stable) -------- */
+function moveNo() {
 
-const rect=card.getBoundingClientRect();
-const yesRect=yesBtn.getBoundingClientRect();
+  if (noBtn.disabled) return;
 
-const btnW=noBtn.offsetWidth;
-const btnH=noBtn.offsetHeight;
-const padding=20;
+  const padding = 20;
 
-let x,y,tries=0;
+  const maxX = card.clientWidth - noBtn.offsetWidth - padding;
+  const maxY = card.clientHeight - noBtn.offsetHeight - padding - 120;
 
-do{
-x=Math.random()*(rect.width-btnW-padding*2)+padding;
-y=Math.random()*(rect.height-btnH-padding*2)+padding;
+  const randomX = Math.random() * maxX;
+  const randomY = Math.random() * maxY;
 
-var futureRect={
-left:rect.left+x,
-right:rect.left+x+btnW,
-top:rect.top+y,
-bottom:rect.top+y+btnH
-};
+  noBtn.style.left = randomX + "px";
+  noBtn.style.top = randomY + "px";
 
-tries++;
+  noBtn.innerText =
+    noQuotes[Math.floor(Math.random() * noQuotes.length)];
+}
 
-}while(
-(
-futureRect.right > yesRect.left-20 &&
-futureRect.left < yesRect.right+20 &&
-futureRect.bottom > yesRect.top-20 &&
-futureRect.top < yesRect.bottom+20
-) && tries<50);
+noBtn.addEventListener("pointermove", moveNo);
+noBtn.addEventListener("touchstart", moveNo);
 
-noBtn.style.left=x+"px";
-noBtn.style.top=y+"px";
-noBtn.style.transform="none";
-noBtn.innerText=quotes[Math.floor(Math.random()*quotes.length)];
+/* -------- YES click -------- */
+yesBtn.addEventListener("click", () => {
+
+  noBtn.disabled = true;
+  noBtn.style.opacity = "0.4";
+  noBtn.style.pointerEvents = "none";
+
+  ring.style.display = "block";
+  song.play();
+
+  animateFallingText(yesQuote);
+  startFireworks();
 });
 
-// YES click
-yesBtn.addEventListener("click",()=>{
-ring.style.display="block";
-quoteText.innerText="You just made my life magical 💖✨";
-song.play();
-startFireworks();
-});
+/* -------- Falling text animation -------- */
+function animateFallingText(text) {
 
-// Falling hearts + roses
+  quoteText.innerHTML = "";
+  quoteText.style.position = "relative";
+
+  const words = text.split(" ");
+
+  words.forEach((word, index) => {
+
+    const span = document.createElement("span");
+
+    span.innerHTML = word + "&nbsp;"; // FIXED SPACE
+    span.style.position = "relative";
+    span.style.display = "inline-block";
+    span.style.opacity = "0";
+
+    // Start from TOP of card
+    span.style.transform = `translateY(-${card.clientHeight}px)`;
+    span.style.transition = "all 0.8s ease";
+
+    quoteText.appendChild(span);
+
+    setTimeout(() => {
+      span.style.opacity = "1";
+      span.style.transform = "translateY(0)";
+    }, index * 300);
+
+  });
+}
+
+
+/* -------- Rain effect -------- */
 setInterval(()=>{
 const el=document.createElement("div");
 el.classList.add("fall");
@@ -224,16 +276,16 @@ el.style.left=Math.random()*100+"%";
 el.style.animationDuration=(Math.random()*3+4)+"s";
 document.body.appendChild(el);
 setTimeout(()=>el.remove(),7000);
-},800);
+},600);
 
-// Fireworks
-const canvas=document.getElementById("fireworks");
-const ctx=canvas.getContext("2d");
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+/* -------- Fireworks -------- */
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
 function startFireworks(){
-for(let i=0;i<200;i++){
+for(let i=0;i<250;i++){
 setTimeout(()=>{
 ctx.beginPath();
 ctx.arc(Math.random()*canvas.width,
@@ -246,6 +298,5 @@ ctx.fill();
 }
 
 </script>
-
 </body>
 </html>
