@@ -60,40 +60,46 @@ to{transform:translateY(-60px);}
 /* 💎 Card */
 .card{
 position:relative;
-width:90%;
-max-width:650px;
-padding:70px 40px 200px;
+width:92%;
+max-width:600px;
+height:420px; /* FIXED HEIGHT */
+padding:40px 25px;
 border-radius:35px;
-background:rgba(255,255,255,0.15);
-backdrop-filter:blur(30px);
+background:rgba(255,255,255,0.18);
+backdrop-filter:blur(35px);
 border:1px solid rgba(255,255,255,0.4);
-box-shadow:0 30px 80px rgba(0,0,0,0.4);
+box-shadow:0 20px 60px rgba(0,0,0,0.4);
 text-align:center;
+overflow:hidden;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
 }
 
 h1{
 font-family:'Great Vibes',cursive;
-font-size:52px;
-margin-bottom:30px;
+font-size:38px;
+margin-bottom:25px;
 text-shadow:0 0 20px rgba(255,255,255,0.9);
 }
 
 button{
-padding:15px 36px;
-font-size:18px;
+padding:14px 30px;
+font-size:16px;
 border:none;
 border-radius:50px;
 cursor:pointer;
 font-weight:600;
 color:white;
 transition:0.3s;
+margin:10px;
 }
 
 #yesBtn{
 background:linear-gradient(45deg,#ff006e,#ff4d6d);
 box-shadow:0 0 25px #ff4d6d;
 }
-#yesBtn:hover{transform:scale(1.1);}
 
 #noBtn{
 position:absolute;
@@ -104,30 +110,30 @@ box-shadow:0 0 20px #4cc9f0;
 /* 💍 Ring */
 .ring{
 display:none;
-font-size:100px;
-margin-top:30px;
-animation:ringPop 1s forwards;
+font-size:90px;
+margin-top:10px;
+animation:ringPop 0.8s forwards;
 }
 @keyframes ringPop{
 from{transform:scale(0);}
-to{transform:scale(1.3);}
+to{transform:scale(1.2);}
 }
 
 /* 💬 Quote */
 .quote{
-margin-top:20px;
-font-size:22px;
+margin-top:15px;
+font-size:18px;
 font-weight:600;
 color:#ffffff;
-text-shadow:0 0 15px rgba(255,255,255,0.9);
-min-height:50px;
+text-align:center;
+min-height:60px;
 }
 
 /* 🌹 Rain */
 .fall{
 position:fixed;
 top:-30px;
-font-size:24px;
+font-size:22px;
 animation:fall linear forwards;
 }
 @keyframes fall{
@@ -137,12 +143,23 @@ opacity:0;
 }
 }
 
-/* 🎇 Fireworks */
 canvas{
 position:fixed;
 top:0;
 left:0;
 pointer-events:none;
+}
+
+/* 📱 Extra Mobile Richness */
+@media(max-width:480px){
+.card{
+height:450px;
+border-radius:25px;
+padding:30px 20px;
+}
+h1{
+font-size:32px;
+}
 }
 </style>
 </head>
@@ -180,94 +197,77 @@ const quoteText = document.getElementById("quoteText");
 const song = document.getElementById("song");
 
 const noQuotes = [
-  "Still thinking? 🥺",
-  "You can't escape 😜",
-  "My heart says YES ❤️",
-  "Destiny decided 💘"
+"Still thinking? 🥺",
+"Come onnn 😜",
+"Destiny decided 💘"
 ];
 
-const yesQuote =
-  "You just made my world brighter and my heart happier forever 💖✨";
+const yesQuote = "You just made my world magical and my heart forever yours 💖✨";
 
-/* -------- Initial NO placement -------- */
-function placeNo() {
-  const x = (card.clientWidth - noBtn.offsetWidth) / 2;
-  const y = card.clientHeight * 0.65;
-  noBtn.style.left = x + "px";
-  noBtn.style.top = y + "px";
+/* NO button placement */
+function placeNo(){
+const x=(card.clientWidth-noBtn.offsetWidth)/2;
+const y=card.clientHeight*0.6;
+noBtn.style.left=x+"px";
+noBtn.style.top=y+"px";
 }
 placeNo();
 
-/* -------- NO movement (perfect stable) -------- */
-function moveNo() {
+function moveNo(){
+const padding=20;
+const maxX=card.clientWidth-noBtn.offsetWidth-padding;
+const maxY=card.clientHeight-noBtn.offsetHeight-padding-100;
 
-  if (noBtn.disabled) return;
+const x=Math.random()*maxX;
+const y=Math.random()*maxY;
 
-  const padding = 20;
-
-  const maxX = card.clientWidth - noBtn.offsetWidth - padding;
-  const maxY = card.clientHeight - noBtn.offsetHeight - padding - 120;
-
-  const randomX = Math.random() * maxX;
-  const randomY = Math.random() * maxY;
-
-  noBtn.style.left = randomX + "px";
-  noBtn.style.top = randomY + "px";
-
-  noBtn.innerText =
-    noQuotes[Math.floor(Math.random() * noQuotes.length)];
+noBtn.style.left=x+"px";
+noBtn.style.top=y+"px";
+noBtn.innerText=noQuotes[Math.floor(Math.random()*noQuotes.length)];
 }
 
-noBtn.addEventListener("pointermove", moveNo);
-noBtn.addEventListener("touchstart", moveNo);
+noBtn.addEventListener("pointermove",moveNo);
+noBtn.addEventListener("touchstart",moveNo);
 
-/* -------- YES click -------- */
-yesBtn.addEventListener("click", () => {
+/* YES click */
+yesBtn.addEventListener("click",()=>{
 
-  noBtn.disabled = true;
-  noBtn.style.opacity = "0.4";
-  noBtn.style.pointerEvents = "none";
+// REMOVE NO button completely
+noBtn.remove();
 
-  ring.style.display = "block";
-  song.play();
+ring.style.display="block";
+song.play();
+animateFallingText(yesQuote);
+startFireworks();
 
-  animateFallingText(yesQuote);
-  startFireworks();
 });
 
-/* -------- Falling text animation -------- */
-function animateFallingText(text) {
+/* Falling text */
+function animateFallingText(text){
 
-  quoteText.innerHTML = "";
-  quoteText.style.position = "relative";
+quoteText.innerHTML="";
+const words=text.split(" ");
 
-  const words = text.split(" ");
+words.forEach((word,index)=>{
 
-  words.forEach((word, index) => {
+const span=document.createElement("span");
+span.innerHTML=word+"&nbsp;";
+span.style.display="inline-block";
+span.style.opacity="0";
+span.style.transform="translateY(-200px)";
+span.style.transition="all 0.7s ease";
 
-    const span = document.createElement("span");
+quoteText.appendChild(span);
 
-    span.innerHTML = word + "&nbsp;"; // FIXED SPACE
-    span.style.position = "relative";
-    span.style.display = "inline-block";
-    span.style.opacity = "0";
+setTimeout(()=>{
+span.style.opacity="1";
+span.style.transform="translateY(0)";
+},index*250);
 
-    // Start from TOP of card
-    span.style.transform = `translateY(-${card.clientHeight}px)`;
-    span.style.transition = "all 0.8s ease";
-
-    quoteText.appendChild(span);
-
-    setTimeout(() => {
-      span.style.opacity = "1";
-      span.style.transform = "translateY(0)";
-    }, index * 300);
-
-  });
+});
 }
 
-
-/* -------- Rain effect -------- */
+/* Rain */
 setInterval(()=>{
 const el=document.createElement("div");
 el.classList.add("fall");
@@ -278,14 +278,14 @@ document.body.appendChild(el);
 setTimeout(()=>el.remove(),7000);
 },600);
 
-/* -------- Fireworks -------- */
-const canvas = document.getElementById("fireworks");
-const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+/* Fireworks */
+const canvas=document.getElementById("fireworks");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 
 function startFireworks(){
-for(let i=0;i<250;i++){
+for(let i=0;i<200;i++){
 setTimeout(()=>{
 ctx.beginPath();
 ctx.arc(Math.random()*canvas.width,
@@ -293,7 +293,7 @@ Math.random()*canvas.height,
 Math.random()*4+2,0,Math.PI*2);
 ctx.fillStyle=`hsl(${Math.random()*360},100%,60%)`;
 ctx.fill();
-},i*5);
+},i*4);
 }
 }
 
