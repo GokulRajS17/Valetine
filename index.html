@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Will You Be Mine 💖</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+height:100vh;
+overflow:hidden;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(-45deg,#ff9a9e,#fad0c4,#fbc2eb,#a18cd1);
+background-size:400% 400%;
+animation:bg 12s infinite alternate;
+}
+
+@keyframes bg{
+0%{background-position:0% 50%;}
+100%{background-position:100% 50%;}
+}
+
+/* PREMIUM CARD */
+.card{
+position:relative;
+width:90%;
+max-width:650px;
+padding:60px 40px 140px;
+border-radius:30px;
+background:rgba(255,255,255,0.25);
+backdrop-filter:blur(30px);
+border:2px solid rgba(255,255,255,0.4);
+box-shadow:0 0 60px rgba(255,0,120,0.5);
+text-align:center;
+overflow:hidden;
+}
+
+h1{
+font-family:'Great Vibes',cursive;
+font-size:44px;
+margin-bottom:30px;
+color:white;
+text-shadow:0 0 12px rgba(255,255,255,0.8);
+}
+
+.quote{
+margin-top:20px;
+font-size:18px;
+min-height:60px;
+color:white;
+}
+
+/* BUTTONS */
+button{
+padding:14px 32px;
+font-size:18px;
+border:none;
+border-radius:50px;
+cursor:pointer;
+transition:0.3s;
+font-weight:600;
+color:white;
+}
+
+#yesBtn{
+background:linear-gradient(45deg,#ff006e,#ff4d6d);
+box-shadow:0 0 20px #ff4d6d;
+}
+
+#yesBtn:hover{
+transform:scale(1.1);
+}
+
+#noBtn{
+position:absolute;
+background:linear-gradient(45deg,#a18cd1,#fbc2eb);
+box-shadow:0 0 15px #fbc2eb;
+}
+
+/* Ring */
+.ring{
+display:none;
+font-size:90px;
+margin-top:20px;
+animation:pop 0.8s forwards;
+}
+
+@keyframes pop{
+from{transform:scale(0);}
+to{transform:scale(1.2);}
+}
+
+/* Falling */
+.fall{
+position:fixed;
+top:-30px;
+animation:fall linear forwards;
+}
+
+@keyframes fall{
+to{
+transform:translateY(110vh) rotate(360deg);
+opacity:0;
+}
+}
+
+/* Fireworks */
+canvas{
+position:fixed;
+top:0;
+left:0;
+pointer-events:none;
+}
+</style>
+</head>
+
+<body>
+
+<audio id="song">
+<source src="music/mylove.mp3" type="audio/mpeg">
+</audio>
+
+<canvas id="fireworks"></canvas>
+
+<div class="card" id="card">
+<h1>Will You Be My Valentine? 💖</h1>
+
+<button id="yesBtn">Yes 💕</button>
+<button id="noBtn">No 😜</button>
+
+<div class="ring" id="ring">💍</div>
+<div class="quote" id="quoteText"></div>
+</div>
+
+<script>
+
+const card=document.getElementById("card");
+const yesBtn=document.getElementById("yesBtn");
+const noBtn=document.getElementById("noBtn");
+const ring=document.getElementById("ring");
+const quoteText=document.getElementById("quoteText");
+const song=document.getElementById("song");
+
+const quotes=[
+"Please think again 🥺",
+"Destiny says YES 💕",
+"You can't escape love 😜",
+"My heart already chose you ❤️",
+"Just say YES 💘"
+];
+
+// Initial placement
+function placeNo(){
+noBtn.style.left="50%";
+noBtn.style.top="75%";
+noBtn.style.transform="translateX(-50%)";
+}
+placeNo();
+
+// Smart movement (no stuck + avoid YES button)
+noBtn.addEventListener("mouseenter",()=>{
+
+const rect=card.getBoundingClientRect();
+const yesRect=yesBtn.getBoundingClientRect();
+
+const btnW=noBtn.offsetWidth;
+const btnH=noBtn.offsetHeight;
+const padding=20;
+
+let x,y,tries=0;
+
+do{
+x=Math.random()*(rect.width-btnW-padding*2)+padding;
+y=Math.random()*(rect.height-btnH-padding*2)+padding;
+
+var futureRect={
+left:rect.left+x,
+right:rect.left+x+btnW,
+top:rect.top+y,
+bottom:rect.top+y+btnH
+};
+
+tries++;
+
+}while(
+(
+futureRect.right > yesRect.left-20 &&
+futureRect.left < yesRect.right+20 &&
+futureRect.bottom > yesRect.top-20 &&
+futureRect.top < yesRect.bottom+20
+) && tries<50);
+
+noBtn.style.left=x+"px";
+noBtn.style.top=y+"px";
+noBtn.style.transform="none";
+noBtn.innerText=quotes[Math.floor(Math.random()*quotes.length)];
+});
+
+// YES click
+yesBtn.addEventListener("click",()=>{
+ring.style.display="block";
+quoteText.innerText="You just made my life magical 💖✨";
+song.play();
+startFireworks();
+});
+
+// Falling hearts + roses
+setInterval(()=>{
+const el=document.createElement("div");
+el.classList.add("fall");
+el.innerHTML=Math.random()>0.5?"🌹":"💖";
+el.style.left=Math.random()*100+"%";
+el.style.animationDuration=(Math.random()*3+4)+"s";
+document.body.appendChild(el);
+setTimeout(()=>el.remove(),7000);
+},800);
+
+// Fireworks
+const canvas=document.getElementById("fireworks");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+function startFireworks(){
+for(let i=0;i<200;i++){
+setTimeout(()=>{
+ctx.beginPath();
+ctx.arc(Math.random()*canvas.width,
+Math.random()*canvas.height,
+Math.random()*4+2,0,Math.PI*2);
+ctx.fillStyle=`hsl(${Math.random()*360},100%,60%)`;
+ctx.fill();
+},i*5);
+}
+}
+
+</script>
+
+</body>
+</html>
